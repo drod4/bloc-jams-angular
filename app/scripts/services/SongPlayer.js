@@ -2,12 +2,14 @@
      function SongPlayer() {
           var SongPlayer = {};
          
+     /** Injected the Fixtures service into the SongPlayer service */
+         
+         var currentAlbum = Fixtures.getAlbum();
+         
     /**
     * @desc Current selected song
     * @type {Object}
     */
-         
-         var currentSong = null;
          
  /**
  * @desc Buzz object audio file
@@ -26,7 +28,7 @@
          var setSong = function(song) {
     if (currentBuzzObject) {
         currentBuzzObject.stop();
-        currentSong.playing = null;
+        SongPlayer.currentSong.playing = null;
     }
  
     currentBuzzObject = new buzz.sound(song.audioUrl, {
@@ -34,7 +36,7 @@
         preload: true
     });
  
-    currentSong = song;
+    SongPlayer.currentSong = song;
  };
          
          /**
@@ -48,13 +50,26 @@
             song.playing = true;
         };
          
+         /** a function to get the index of a song */
+         
+         var getSongIndex = function(song) {
+     return currentAlbum.songs.indexOf(song);
+ };
+         
+         /**
+* @desc Active song object from list of songs
+* @type {Object}
+*/
+         SongPlayer.currentSong = null;
+         
          
          SongPlayer.play = function(song) {
-             if (currentSong !== song) {
+             song = song || SongPlayer.currentSong;
+             if (SongPlayer.currentSong !== song) {
                 setSong(song);
                 playSong(song);   
                 song.playing = true;    
-            } else if (currentSong === song) {
+            } else if (SongPlayer.currentSong === song) {
                 if (currentBuzzObject.isPaused()) {
                 currentBuzzObject.play();
              
@@ -69,9 +84,29 @@
      };
          
          SongPlayer.pause = function(song) {
-         currentBuzzObject.pause();
-         song.playing = false;
+            song = song || SongPlayer.currentSong;
+            currentBuzzObject.pause();
+            song.playing = false;
  };
+    
+    /** method to go to previous song */
+    
+    SongPlayer.previous = function() {
+     var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+     currentSongIndex--;
+ };
+    
+    /** Update the "previous" method with stop the currently playing song, and
+set the value of the currently playing song to the first song. */
+    
+    if (currentSongIndex < 0) {
+         currentBuzzObject.stop();
+         SongPlayer.currentSong.playing = null;
+     } else {
+         var song = currentAlbum.songs[currentSongIndex];
+         setSong(song);
+         playSong(song);
+     }
 
           return SongPlayer;
      }
