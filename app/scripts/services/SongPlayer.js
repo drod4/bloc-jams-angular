@@ -119,22 +119,21 @@
     SongPlayer.previous = function() {
      var currentSongIndex = getSongIndex(SongPlayer.currentSong);
      currentSongIndex--;
- };
-    
-    /** Update the "previous" method with stop the currently playing song, and
-set the value of the currently playing song to the first song. */
-    
-    if (currentSongIndex < 0) {
+        if (currentSongIndex < 0) {
          currentBuzzObject.stop();
          SongPlayer.currentSong.playing = null;
      } else {
          var song = currentAlbum.songs[currentSongIndex];
          setSong(song);
          playSong(song);
-     }
+     };
 
-          return SongPlayer;
-     }
+    return SongPlayer;
+ };
+    
+    /** Update the "previous" method with stop the currently playing song, and
+set the value of the currently playing song to the first song. */
+     
  
      angular
          .module('blocJams')
