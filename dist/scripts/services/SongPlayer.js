@@ -1,4 +1,4 @@
-function () {
+(function () {
     function SongPlayer($rootScope, Fixtures) {
          /**
         * @desc Song player object that is injected by the factory service 
